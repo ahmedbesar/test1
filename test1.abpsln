@@ -1,0 +1,7 @@
+{
+  "modules": {
+    "test1": {
+      "path": "test1.abpmdl"
+    }
+  }
+}

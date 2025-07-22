@@ -1,0 +1,15 @@
+﻿using test1.Localization;
+using Volo.Abp.AspNetCore.Mvc.UI.RazorPages;
+
+namespace test1.Web.Pages;
+
+/* Inherit your PageModel classes from this class.
+ */
+public abstract class test1PageModel : AbpPageModel
+{
+    protected test1PageModel()
+    {
+        LocalizationResourceType = typeof(test1Resource);
+        ObjectMapperContext = typeof(test1WebModule);
+    }
+}

@@ -12,7 +12,7 @@ namespace test1.Orders;
 
 public class OrderAppService:test1AppService,IOrderAppService
 {
-    private readonly IRepository<Order> _orderRepository;
+    private readonly IRepository<Order, Guid> _orderRepository;
     private readonly IDistributedEventBus _distributedEventBus;
 
     public OrderAppService(IRepository<Order, Guid> orderRepository

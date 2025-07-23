@@ -7,4 +7,9 @@ public class Order : CreationAuditedAggregateRoot<Guid>
 {
     public Guid ProductId { get; set; }
     public string CustomerName { get; set; }
+
+    public Order()
+    {
+        
+    }
 }

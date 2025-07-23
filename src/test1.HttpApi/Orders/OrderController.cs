@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -24,13 +25,29 @@ public class OrderController : test1Controller, IOrderAppService
     //[Authorize]
     public Task<List<OrderDto>> GetListAsync()
     {
+        try
+        {
         return _orderAppService.GetListAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
     [HttpPost]
     [Route("CreateOrder")]
     //[Authorize]
     public Task CreateAsync(OrderCreationDto input)
     {
+        try
+        {
         return _orderAppService.CreateAsync(input);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

@@ -14,9 +14,7 @@ public class test1EntityFrameworkCoreModule : AbpModule
     {
         context.Services.AddAbpDbContext<test1DbContext>(options =>
         {
-                /* Add custom repositories here. Example:
-                 * options.AddRepository<Question, EfCoreQuestionRepository>();
-                 */
+            options.AddDefaultRepositories(includeAllEntities: true);
         });
     }
 }

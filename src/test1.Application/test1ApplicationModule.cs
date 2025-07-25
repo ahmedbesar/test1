@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
 using Volo.Abp.Application;
+using Volo.Abp.EventBus.RabbitMq;
 
 namespace test1;
 
@@ -11,7 +12,8 @@ namespace test1;
     typeof(AbpDddApplicationModule),
     typeof(AbpAutoMapperModule)
     )]
-public class test1ApplicationModule : AbpModule
+[DependsOn(typeof(AbpEventBusRabbitMqModule))]
+    public class test1ApplicationModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {

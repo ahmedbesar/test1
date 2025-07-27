@@ -5,11 +5,16 @@ namespace test1.Orders;
 
 public class Order : CreationAuditedAggregateRoot<Guid>
 {
-    public Guid ProductId { get; set; }
-    public string CustomerName { get; set; }
+    public Guid ProductId { get; private set; }
+    public string CustomerName { get;private set; }
 
     public Order()
     {
         
+    }
+    public Order(Guid productId , string customerName)
+    {
+        ProductId=productId;
+        CustomerName = customerName;
     }
 }

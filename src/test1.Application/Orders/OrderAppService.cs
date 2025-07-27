@@ -32,12 +32,8 @@ public class OrderAppService:test1AppService,IOrderAppService
 
     public async Task CreateAsync(OrderCreationDto input)
     {
-        var order = new Order
-        {
-            CustomerName = input.CustomerName,
-            ProductId = input.ProductId,
-        };
-
+        var order = new Order(input.ProductId, input.CustomerName);
+            
         await _orderRepository.InsertAsync(order);
         await _distributedEventBus.PublishAsync(
             new OrderPlacedEto { CustomerName =order.CustomerName,ProductId=order.ProductId});

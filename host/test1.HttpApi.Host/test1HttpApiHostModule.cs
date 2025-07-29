@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Hangfire;
+using Hangfire.PostgreSql;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -34,6 +36,7 @@ using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
 using Volo.Abp.VirtualFileSystem;
+using Volo.Abp.BackgroundJobs.Hangfire;
 
 namespace test1;
 
@@ -53,7 +56,8 @@ namespace test1;
     typeof(AbpAspNetCoreSerilogModule),
     typeof(AbpSwashbuckleModule)
     )]
-public class test1HttpApiHostModule : AbpModule
+[DependsOn(typeof(AbpBackgroundJobsHangfireModule))]
+    public class test1HttpApiHostModule : AbpModule
 {
 
     public override void ConfigureServices(ServiceConfigurationContext context)
@@ -100,25 +104,7 @@ public class test1HttpApiHostModule : AbpModule
         Configure<AbpLocalizationOptions>(options =>
         {
             options.Languages.Add(new LanguageInfo("ar", "ar", "العربية"));
-            options.Languages.Add(new LanguageInfo("cs", "cs", "Čeština"));
             options.Languages.Add(new LanguageInfo("en", "en", "English"));
-            options.Languages.Add(new LanguageInfo("en-GB", "en-GB", "English (UK)"));
-            options.Languages.Add(new LanguageInfo("fi", "fi", "Finnish"));
-            options.Languages.Add(new LanguageInfo("fr", "fr", "Français"));
-            options.Languages.Add(new LanguageInfo("hi", "hi", "Hindi"));
-            options.Languages.Add(new LanguageInfo("is", "is", "Icelandic"));
-            options.Languages.Add(new LanguageInfo("it", "it", "Italiano"));
-            options.Languages.Add(new LanguageInfo("hu", "hu", "Magyar"));
-            options.Languages.Add(new LanguageInfo("pt-BR", "pt-BR", "Português"));
-            options.Languages.Add(new LanguageInfo("ro-RO", "ro-RO", "Română"));
-            options.Languages.Add(new LanguageInfo("ru", "ru", "Русский"));
-            options.Languages.Add(new LanguageInfo("sk", "sk", "Slovak"));
-            options.Languages.Add(new LanguageInfo("tr", "tr", "Türkçe"));
-            options.Languages.Add(new LanguageInfo("zh-Hans", "zh-Hans", "简体中文"));
-            options.Languages.Add(new LanguageInfo("zh-Hant", "zh-Hant", "繁體中文"));
-            options.Languages.Add(new LanguageInfo("de-DE", "de-DE", "Deutsch"));
-            options.Languages.Add(new LanguageInfo("es", "es", "Español"));
-            options.Languages.Add(new LanguageInfo("el", "el", "Ελληνικά"));
         });
 
         context.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -159,6 +145,8 @@ public class test1HttpApiHostModule : AbpModule
                     .AllowCredentials();
             });
         });
+        
+        ConfigureHangfire(context, configuration);
     }
 
     public override void OnApplicationInitialization(ApplicationInitializationContext context)
@@ -198,6 +186,18 @@ public class test1HttpApiHostModule : AbpModule
         });
         app.UseAuditing();
         app.UseAbpSerilogEnrichers();
+        app.UseAbpHangfireDashboard("/hangfire", options =>
+        {
+        });
+        app.UseAbpHangfireDashboard(); //should add to the request pipeline before the app.UseConfiguredEndpoints()
         app.UseConfiguredEndpoints();
+    }
+    
+    private void ConfigureHangfire(ServiceConfigurationContext context, IConfiguration configuration)
+    {
+        context.Services.AddHangfire(config =>
+        {
+            config.UsePostgreSqlStorage(configuration.GetConnectionString("Default"));
+        });
     }
 }

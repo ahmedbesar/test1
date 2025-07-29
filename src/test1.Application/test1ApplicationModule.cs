@@ -3,6 +3,7 @@ using Volo.Abp.AutoMapper;
 using Volo.Abp.Modularity;
 using Volo.Abp.Application;
 using Volo.Abp.EventBus.RabbitMq;
+using Volo.Abp.BackgroundJobs.Hangfire;
 
 namespace test1;
 
@@ -13,6 +14,7 @@ namespace test1;
     typeof(AbpAutoMapperModule)
     )]
 [DependsOn(typeof(AbpEventBusRabbitMqModule))]
+    [DependsOn(typeof(AbpBackgroundJobsHangfireModule))]
     public class test1ApplicationModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
